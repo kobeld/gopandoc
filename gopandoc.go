@@ -23,13 +23,12 @@ func ToHtml(mdStr string) (htmlStr string, err error) {
 	cmd := exec.Command(CMD, "-f", OP_MARKDOWN, "-t", OP_HTML)
 
 	cmd.Stdin = strings.NewReader(mdStr)
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	err = cmd.Run()
+	b, err := cmd.Output()
 	if err != nil {
 		return
 	}
-	htmlStr = out.String()
+
+	htmlStr = (string)(b)
 
 	return
 }
