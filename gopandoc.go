@@ -15,7 +15,8 @@ const (
 )
 
 func Check() error {
-	_, err := exec.LookPath("pandoc")
+	path, err := exec.LookPath("pandoc")
+	log.Println(path)
 	return err
 }
 
@@ -42,7 +43,7 @@ func ToMarkdown(htmlStr string) (mdStr string, err error) {
 }
 
 func bash(bash, content string) (out string, err error) {
-	cmd := exec.Command("sh", "-c", bash)
+	cmd := exec.Command("/bin/sh", "-c", bash)
 	cmd.Stdin = strings.NewReader(content)
 	var buf bytes.Buffer
 	cmd.Stderr = &buf
