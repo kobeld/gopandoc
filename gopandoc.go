@@ -10,8 +10,9 @@ import (
 
 const (
 	op_html        = `html`
-	op_markdown    = `markdown`      // Don't auto generate id for header
-	op_atx_headers = `--atx-headers` // User atx header with "#"
+	op_markdown    = `markdown-escaped_line_breaks` // Don't auto generate id for header
+	op_atx_headers = `--atx-headers`                // User atx header with "#"
+	no_wrap        = "--no-wrap"
 )
 
 func Check() error {
@@ -31,9 +32,8 @@ func ToHtml(mdStr string) (htmlStr string, err error) {
 }
 
 func ToMarkdown(htmlStr string) (mdStr string, err error) {
-
-	mdStr, err = bash(fmt.Sprintf("pandoc -f %s -t %s %s", op_html,
-		op_markdown, op_atx_headers), htmlStr)
+	mdStr, err = bash(fmt.Sprintf("pandoc -f %s -t %s %s %s", op_html,
+		op_markdown, op_atx_headers, no_wrap), htmlStr)
 	if err != nil {
 		return
 	}
@@ -47,9 +47,9 @@ func bash(bash, content string) (out string, err error) {
 	var buf bytes.Buffer
 	cmd.Stderr = &buf
 	cmd.Stdout = &buf
+
 	err = cmd.Run()
 	if err != nil {
-		log.Println(err)
 		return
 	}
 
