@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os/exec"
+	"runtime/debug"
 	"strings"
 )
 
@@ -42,17 +43,32 @@ func ToMarkdown(htmlStr string) (mdStr string, err error) {
 }
 
 func bash(bash, content string) (out string, err error) {
+	var buf bytes.Buffer
+
 	cmd := exec.Command("/bin/sh", "-c", bash)
 	cmd.Stdin = strings.NewReader(content)
-	var buf bytes.Buffer
 	cmd.Stderr = &buf
 	cmd.Stdout = &buf
 
 	err = cmd.Run()
 	if err != nil {
+		printStackAndError(err)
+		cmd.Process.Release()
+		buf.Reset()
 		return
 	}
 
 	out = buf.String()
+
+	// Clean up resource
+	cmd.Process.Kill()
+	buf.Reset()
+	debug.FreeOSMemory()
+
 	return
+}
+
+func printStackAndError(err error) {
+	log.Printf("********** Debug Error message: %+v ***********\n", err)
+	debug.PrintStack()
 }
