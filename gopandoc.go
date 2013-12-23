@@ -3,6 +3,7 @@ package gopandoc
 import (
 	"bytes"
 	"fmt"
+	gxg "github.com/theplant/goxgo"
 	"log"
 	"os/exec"
 	"runtime/debug"
@@ -39,6 +40,22 @@ func ToMarkdown(htmlStr string) (mdStr string, err error) {
 		return
 	}
 
+	return
+}
+
+func ZToMarkdown(htmlStr string) (mdText string, err error) {
+	dsn := gxg.DSN{
+		Protocol: "tcp",
+		Host:     "localhost",
+		Port:     9999,
+	}
+	payload := struct {
+		HtmlText string `json:"htmlText"`
+	}{
+		HtmlText: htmlStr,
+	}
+
+	gxg.Call(&dsn, &payload, &mdText)
 	return
 }
 

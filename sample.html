@@ -1,71 +1,4 @@
-package gopandoc
-
-import "testing"
-
-func TestCheck(t *testing.T) {
-	err := Check()
-	if err != nil {
-		t.Error(err)
-	}
-}
-
-func TestToHtml(t *testing.T) {
-	return
-	mdStr := "**Hello World!**"
-	expected_htmlStr := "<p><strong>Hello World!</strong></p>\n"
-
-	htmlStr, err := ToHtml(mdStr)
-	if err != nil {
-		t.Error(err)
-	}
-	if htmlStr != expected_htmlStr {
-		t.Error("ToHtml doesn't work as expected!")
-	}
-
-	mdStr = "# This is the H1 title\n## This is the H2 title"
-	expected_htmlStr = "<h1>This is the H1 title</h1>\n<h2>This is the H2 title</h2>\n"
-
-	htmlStr, err = ToHtml(mdStr)
-	if err != nil {
-		t.Error(err)
-	}
-	if htmlStr != expected_htmlStr {
-		t.Error("ToHtml doesn't work as expected!")
-		t.Errorf("ToMarkdown doesn't work as expeted! \n -- Expected: %+v \n -- Actually: %+v",
-			expected_htmlStr, htmlStr)
-	}
-
-}
-
-func TestToMarkdown(t *testing.T) {
-	htmlStr := "<p><strong>Hello World!</strong></p>"
-	expected_mdStr := "**Hello World!**\n"
-
-	mdStr, err := ToMarkdown(htmlStr)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if mdStr != expected_mdStr {
-		t.Errorf("ToMarkdown doesn't work as expeted! \n -- Expected: %+v \n -- Actually: %+v",
-			expected_mdStr, mdStr)
-	}
-
-	htmlStr = "<h1>This is the H1 title</h1>"
-	expected_mdStr = "# This is the H1 title\n"
-
-	mdStr, err = ToMarkdown(htmlStr)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if mdStr != expected_mdStr {
-		t.Errorf("ToMarkdown doesn't work as expeted! \n -- Expected: %+v \n -- Actually: %+v",
-			expected_mdStr, mdStr)
-	}
-}
-
-var sampleHTML = `<h1 id="an-exhibit-of-markdown">An exhibit of Markdown</h1>
+<h1 id="an-exhibit-of-markdown">An exhibit of Markdown</h1>
 <p>This note demonstrates some of what <a href="http://daringfireball.net/projects/markdown/">Markdown</a> is capable of doing.</p>
 <p><em>Note: Feel free to play with this page. Unlike regular notes, this doesn't automatically save itself.</em></p>
 <h2 id="basic-formatting">Basic formatting</h2>
@@ -115,19 +48,4 @@ var sampleHTML = `<h1 id="an-exhibit-of-markdown">An exhibit of Markdown</h1>
 <h2 id="images">Images</h2>
 <p>Markdown can also contain images. I'll need to add something here sometime.</p>
 <h2 id="finally">Finally</h2>
-<p>There's actually a lot more to Markdown than this. See the official <a href="http://daringfireball.net/projects/markdown/basics">introduction</a> and <a href="http://daringfireball.net/projects/markdown/syntax">syntax</a> for more information. However, be aware that this is not using the official implementation, and this might work subtly differently in some of the little things.</p> 
-`
-
-func BenchmarkToMarkdownWithCommandLineCalling(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		ToMarkdown(sampleHTML)
-	}
-	return
-}
-
-func BenchmarkToMarkdownWithZMQCalling(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		ZToMarkdown(sampleHTML)
-	}
-	return
-}
+<p>There's actually a lot more to Markdown than this. See the official <a href="http://daringfireball.net/projects/markdown/basics">introduction</a> and <a href="http://daringfireball.net/projects/markdown/syntax">syntax</a> for more information. However, be aware that this is not using the official implementation, and this might work subtly differently in some of the little things.</p>
