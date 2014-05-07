@@ -3,6 +3,7 @@ package gopandoc
 import (
 	"bytes"
 	"fmt"
+	gopandoc "github.com/theplant/pandora/clients/go"
 	"log"
 	"os/exec"
 	"runtime/debug"
@@ -16,6 +17,10 @@ const (
 	no_wrap        = "--no-wrap"
 )
 
+var (
+	EnablePandocZMQMode = false
+)
+
 func Check() error {
 	path, err := exec.LookPath("pandoc")
 	log.Println(path)
@@ -23,6 +28,9 @@ func Check() error {
 }
 
 func ToHtml(mdStr string) (htmlStr string, err error) {
+	if EnablePandocZMQMode {
+		return gopandoc.ToHTML(mdStr)
+	}
 	htmlStr, err = bash(fmt.Sprintf("pandoc -f %s -t %s %s",
 		op_markdown, op_html, op_atx_headers), mdStr)
 	if err != nil {
@@ -33,6 +41,9 @@ func ToHtml(mdStr string) (htmlStr string, err error) {
 }
 
 func ToMarkdown(htmlStr string) (mdStr string, err error) {
+	if EnablePandocZMQMode {
+		return gopandoc.ToMarkdown(htmlStr)
+	}
 	mdStr, err = bash(fmt.Sprintf("pandoc -f %s -t %s %s %s", op_html,
 		op_markdown, op_atx_headers, no_wrap), htmlStr)
 	if err != nil {
